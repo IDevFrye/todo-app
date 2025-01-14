@@ -1,11 +1,28 @@
-const getStorageData = (key) => {
+export const getStorageData = (key) => {
+  const storedData = localStorage.getItem(key);
+  try {
+    return storedData ? JSON.parse(storedData) : null;
+  } catch (error) {
+    return storedData;
+  }
 };
 
-const setStorageData = (key, obj) => {
+export const setStorageData = (key, data) => {
+  localStorage.setItem(key, JSON.stringify(data));
 };
 
-const removeTaskFromStorage = (task) => {
+export const addTaskToStorage = (login, task) => {
+  const tasks = getStorageData(login) || [];
+  tasks.push(task);
+  setStorageData(login, tasks);
+};
+
+export const removeTaskFromStorage = (login, taskId) => {
+  const tasks = getStorageData(login) || [];
+  const updatedTasks = tasks.filter(task => task.taskId !== Number(taskId));
+  setStorageData(login, updatedTasks);
 };
 
 const signOutStorage = (login) => {
+
 };

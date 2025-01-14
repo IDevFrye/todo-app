@@ -4,12 +4,32 @@ const createContainer = () => {
   return container;
 };
 
+export const createButtons = (params) => {
+  const btnWrapper = document.createElement('div');
+  btnWrapper.classList.add('btn-wrapper', 'd-flex', 'justify-content-center', 'gap-2');
+
+  const btns = params.map(({className, type, text}) => {
+    const button = document.createElement('button');
+    button.type = type;
+    button.className = `btn ${className}`;
+    button.textContent = text;
+    return button;
+  });
+
+  btnWrapper.append(...btns);
+
+  return {
+    btnWrapper,
+    btns,
+  };
+};
+
 export const createHeader = () => {
   const header = document.createElement('header');
   header.classList.add('bg-light', 'py-3', 'mb-4', 'border-bottom');
 
   const headerContainer = createContainer();
-  headerContainer.classList.add('d-flex', 'align-items-center', 'justify-content-start');
+  headerContainer.classList.add('d-flex', 'align-items-center', 'justify-content-between');
   header.append(headerContainer);
 
   header.headerContainer = headerContainer;
@@ -29,9 +49,24 @@ export const createLogo = () => {
 
   h1.textContent = 'TodoApp';
 
+  const leftBlock = createContainer();
+  leftBlock.classList.add('d-flex', 'align-items-center');
+  leftBlock.append(logo, h1);
+
+  const button = createButtons([
+    {
+      className: 'btn btn__signOut signout-button',
+      type: 'button',
+      text: '',
+    },
+  ]);
+  button.btns[0].innerHTML =
+  `<i class="fa-solid fa-arrow-right-from-bracket"></i>`;
+  button.btnWrapper.style.marginBottom = 0;
+
   return {
-    h1,
-    logo,
+    leftBlock,
+    signOutButton: button,
   };
 };
 
@@ -105,7 +140,7 @@ export const createModal = () => {
         required
       />
     </div>
-    <button class="btn w-50 btn-modal" type="submit">Войти</button>
+    <button class="btn w-50 btn-modal btn__auth" type="submit">Войти</button>
     `
   );
 
@@ -154,29 +189,9 @@ export const createAddForm = () => {
   return form;
 };
 
-export const createButtons = (params) => {
-  const btnWrapper = document.createElement('div');
-  btnWrapper.classList.add('btn-wrapper', 'd-flex', 'justify-content-center', 'gap-2', 'mt-4');
-
-  const btns = params.map(({className, type, text}) => {
-    const button = document.createElement('button');
-    button.type = type;
-    button.className = `btn ${className}`;
-    button.textContent = text;
-    return button;
-  });
-
-  btnWrapper.append(...btns);
-
-  return {
-    btnWrapper,
-    btns,
-  };
-};
-
 export const createTable = () => {
   const table = document.createElement('table');
-  table.classList.add('table', 'table-striped', 'table-hover');
+  table.classList.add('table', 'table-hover');
 
   const thead = document.createElement('thead');
   thead.classList.add('table-light');
@@ -198,65 +213,128 @@ export const createTable = () => {
   return table;
 };
 
-export const createRow = ({index, taskName, taskStatus}) => {
+export const createRow = ({index, taskId, taskName, taskStatus, taskImportance}) => {
   const tr = document.createElement('tr');
   tr.classList.add('task');
 
+  let statusClass;
+  switch (taskStatus) {
+    case ('Ожидает выполнения'): {
+      statusClass = 'processing';
+      break;
+    }
+    case ('Выполнено'): {
+      statusClass = 'completed';
+      break;
+    }
+    default: {
+      statusClass = 'false-status';
+    }
+  };
+
+  let importanceClass;
+  switch (taskImportance) {
+    case ('Обычная'): {
+      importanceClass = 'common';
+      break;
+    }
+    case ('Важная'): {
+      importanceClass = 'important';
+      break;
+    }
+    case ('Срочная'): {
+      importanceClass = 'urgent';
+      break;
+    }
+    default: {
+      importanceClass = 'false-importance';
+    }
+  };
+
   const tdIndex = document.createElement('td');
-  tdIndex.textContent = index;
+  tdIndex.classList.add(importanceClass + '-td', statusClass + '-td', 'task-index');
+  tdIndex.textContent = index + 1;
 
   const tdTask = document.createElement('td');
-  tdTask.textContent = taskName;
+  tdTask.classList.add(importanceClass + '-td', statusClass + '-td');
+  const tdTaskCont = createContainer();
+  tdTaskCont.classList.add('d-flex', 'p-0');
+
+  const leftName = createContainer();
+  leftName.classList.add('d-flex', 'flex-column', 'p-0', 'left-container');
+
+  const taskIdTd = createContainer();
+  taskIdTd.append(`ID: `);
+  const taskIdTdNumber = document.createElement('span');
+  taskIdTdNumber.classList.add('task__idn')
+  taskIdTdNumber.append(taskId);
+  taskIdTd.append(taskIdTdNumber);
+  taskIdTd.classList.add('task__id', 'p-0');
+  const taskNameTd = createContainer();
+  taskNameTd.append(taskName);
+  taskNameTd.classList.add(statusClass + '-taskName', 'p-0', 'task__name');
+  tr.taskId = taskIdTdNumber;
+  tr.taskName = taskNameTd;
+
+  leftName.append(taskIdTd, taskNameTd);
+
+  const taskImportanceTd = createContainer();
+  taskImportanceTd.classList.add('right-container');
+  const taskImportanceSpan = document.createElement('div');
+  taskImportanceSpan.classList.add('container', importanceClass, `${statusClass}-span`);
+  taskImportanceSpan.textContent = taskImportance;
+  taskImportanceTd.append(taskImportanceSpan);
+  console.log('taskImportanceSpan: ', taskImportanceSpan);
+  tr.taskImportance = taskImportanceSpan;
+
+  tdTaskCont.append(leftName, taskImportanceTd);
+  tdTask.append(tdTaskCont);
 
   const tdStatus = document.createElement('td');
-  tdStatusContainer = document.createElement('div');
-  tdStatusContainer.classList.add('task__status');
+  tdStatus.classList.add(importanceClass + '-td', statusClass + '-td');
+  const tdStatusContainer = document.createElement('div');
+  tdStatusContainer.classList.add(statusClass);
   tdStatusContainer.textContent = taskStatus;
   tdStatus.append(tdStatusContainer);
 
   const tdActions = document.createElement('td');
+  tdActions.classList.add('d-flex', 'justify-content-start', statusClass + '-actions', importanceClass + '-td', statusClass + '-td');
 
   const tdEdit = createButtons([
     {
-      className: 'btn btn-primary mr-3',
+      className: 'btn mr-3 edit-icon',
       type: 'button',
       text: '',
     },
   ]);
-  tdEdit.classList.add('edit-icon');
   tdEdit.btns[0].innerHTML =
   `<i class="fa-solid fa-pen"></i>`;
   tdEdit.btnWrapper.style.marginBottom = 0;
-  tdEdit.append(tdEdit.btnWrapper);
 
   const tdComplete = createButtons([
     {
-      className: 'btn btn-success mr-3',
+      className: 'btn mr-3 complete-icon',
       type: 'button',
       text: '',
     },
   ]);
-  tdComplete.classList.add('complete-icon');
   tdComplete.btns[0].innerHTML =
   `<i class="fa-solid fa-check"></i>`;
   tdComplete.btnWrapper.style.marginBottom = 0;
-  tdComplete.append(tdComplete.btnWrapper);
 
   const tdDelete = createButtons([
     {
-      className: 'btn btn-error mr-3',
+      className: 'btn mr-3 del-icon',
       type: 'button',
       text: '',
     },
   ]);
-  tdDelete.classList.add('del-icon');
   tdDelete.btns[0].innerHTML =
   `<i class="fa-solid fa-trash-can"></i>`;
   tdDelete.btnWrapper.style.marginBottom = 0;
-  tdDelete.append(tdDelete.btnWrapper);
 
-  tdActions.append(tdEdit, tdComplete, tdDelete);
-
+  tdActions.append(tdEdit.btnWrapper, tdComplete.btnWrapper, tdDelete.btnWrapper);
+  
   tr.append(tdIndex, tdTask, tdStatus, tdActions);
 
   return tr;
@@ -266,6 +344,7 @@ export const addTaskToList = (task, list) => {
   list.append(createRow(task));
 };
 
-export const removeTaskFromList = (task, list) => {
-
+export const removeTaskFromList = (index, list) => {
+  const rows = list.querySelectorAll('tr');
+  rows[index].remove();
 };
