@@ -162,11 +162,11 @@ export const createAddForm = () => {
       id="taskName" type="text" placeholder="Введите задачу" required>
     </div>
     <div class="form-group">
-      <select class="form-select" name="taskName" id="taskName" required>
+      <select class="form-select" name="taskImportance" id="taskImportance" required>
         <option value="">Важность</option>
-        <option value="table-light">Обычная</option>
-        <option value="table-warning">Важная</option>
-        <option value="table-danger">Срочная</option>
+        <option value="Обычная">Обычная</option>
+        <option value="Важная">Важная</option>
+        <option value="Срочная">Срочная</option>
       </select>
     </div>
     `);
@@ -183,6 +183,8 @@ export const createAddForm = () => {
       text: 'Очистить',
     },
   ]);
+
+  buttonGroup.btns[0].disabled = true;
 
   form.append(...buttonGroup.btns);
 
@@ -284,7 +286,6 @@ export const createRow = ({index, taskId, taskName, taskStatus, taskImportance})
   taskImportanceSpan.classList.add('container', importanceClass, `${statusClass}-span`);
   taskImportanceSpan.textContent = taskImportance;
   taskImportanceTd.append(taskImportanceSpan);
-  console.log('taskImportanceSpan: ', taskImportanceSpan);
   tr.taskImportance = taskImportanceSpan;
 
   tdTaskCont.append(leftName, taskImportanceTd);

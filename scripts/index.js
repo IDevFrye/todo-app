@@ -1,5 +1,4 @@
 import render from './modules/renderHandler.js';
-import {getStorageData} from './modules/storageHandler.js';
 import * as control from './modules/controllers.js';
 
 const {renderTodoApp, renderTasks} = render;
@@ -13,17 +12,16 @@ export const initTodoApp = (selectorApp, idBounds) => {
     list,
     overlay,
     formAuth,
-    formAdd,
   } = renderTodoApp(app);
 
   overlay.style.display = 'flex';
 
-  const {openModal, closeModal} = control.modalControl(overlay, formAuth, list);
+  const {openModal} = control.modalControl(overlay, formAuth, list);
   control.signOutControl(header, openModal);
   control.finishTaskControl(list);
   control.deleteTaskControl(list);
   control.editTaskControl(list);
-  control.addTaskControl(main);
+  control.addFormControl(main, list, idBounds);
   
   const currentUser = localStorage.getItem('current-user');
   if (currentUser) {

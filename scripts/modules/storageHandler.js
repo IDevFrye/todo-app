@@ -22,7 +22,3 @@ export const removeTaskFromStorage = (login, taskId) => {
   const updatedTasks = tasks.filter(task => task.taskId !== Number(taskId));
   setStorageData(login, updatedTasks);
 };
-
-const signOutStorage = (login) => {
-
-};

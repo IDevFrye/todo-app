@@ -1,8 +1,8 @@
-import {getStorageData, setStorageData, removeTaskFromStorage} from './storageHandler.js';
+import {getStorageData, setStorageData, addTaskToStorage, removeTaskFromStorage} from './storageHandler.js';
 import render from './renderHandler.js';
-import { removeTaskFromList } from './markupHandler.js';
+import {createAddForm, createButtons, createRow} from './markupHandler.js';
 
-const {renderTasks, updateTaskIndices} = render;
+const {renderTasks, updateTaskIndices, randomizeId} = render;
 
 export const modalControl = (overlay, formAuth, list) => {
   const openModal = () => {
@@ -42,18 +42,81 @@ export const modalControl = (overlay, formAuth, list) => {
 
   return {
     openModal,
-    closeModal,
   }
 };
 
-export const addTaskControl = (main) => {
+export const addFormControl = (main, list, idBounds) => {
   main.addEventListener('click', e => {
-
+    const target = e.target;
+    const btnAdd = target.closest('.btn__add');
+    if (btnAdd) {
+      const formAdd = createAddForm();
+      btnAdd.replaceWith(formAdd);
+      addTaskControl(formAdd, list, idBounds);
+    }
   });
 };
 
-export const formAddControl = () => {
+export const addTaskControl = (formAdd, list, idBounds) => {
+  const saveButton = Array.from(formAdd.elements).find(
+    (el) => el.type === 'submit'
+  );
+  const taskNameInput = formAdd.elements['taskName'];
+  const importanceSelect = formAdd.elements['taskImportance'];
 
+  const validateForm = () => {
+    const isTaskNameValid = taskNameInput.value.trim() !== '';
+    const isImportanceValid = importanceSelect.value !== '';
+    saveButton.disabled = !(isTaskNameValid && isImportanceValid);
+  };
+
+  validateForm();
+
+  taskNameInput.addEventListener('change', validateForm);
+  importanceSelect.addEventListener('change', validateForm);
+
+  let isEventHandled = false;
+
+  const handleEvent = e => {
+    if (isEventHandled) return;
+    isEventHandled = true;
+    
+    e.preventDefault();
+    if (!saveButton.disabled) {
+      const taskName = taskNameInput.value.trim();
+      const taskImportance = importanceSelect.value;
+      const taskId = randomizeId(idBounds.min, idBounds.max);
+
+      const newContact = {
+        index: 5,
+        taskId,
+        taskName,
+        taskStatus: 'Ожидает выполнения',
+        taskImportance,
+      };
+
+      list.append(createRow(newContact));
+      const login = getStorageData('current-user');
+      addTaskToStorage(login, newContact)
+      updateTaskIndices(list, login);
+
+      const btnAdd = createButtons([
+        {
+          className: 'btn btn__add mr-3',
+          type: 'button',
+          text: 'ДОБАВИТЬ НОВУЮ ЗАДАЧУ',
+        },
+      ]);
+      formAdd.replaceWith(btnAdd.btnWrapper);
+    };
+  };
+  
+  formAdd.addEventListener('submit', (e) => handleEvent(e));
+  document.addEventListener('keypress', (e) => {
+    if (e.code === 'Enter' && !isEventHandled) {
+      handleEvent(e);
+    }
+  });
 };
 
 export const deleteTaskControl = (list) => {
@@ -202,7 +265,6 @@ export const finishTaskControl = (list) => {
     const target = e.target;
     if (target.closest('.complete-icon')) {
       const taskRow = target.closest('.task');
-      console.log('taskRow: ', taskRow);
       if (taskRow) {
         const importanceClasses = ['completed', 'processing'];
         taskRow.querySelectorAll('td').forEach((td) => {

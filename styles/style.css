@@ -295,3 +295,51 @@ body {
   border: 1px solid #007bff;
   background-color: #f8f9fa;
 }
+
+.form__add {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  .form__add .form-group {
+    margin: 0;
+  }
+
+  .form__add .form-input,
+  .form__add .form-select {
+    border: 1px solid #ccc;
+    padding: 8px 10px !important;
+    margin: 0 !important;
+    border-radius: 4px !important;
+    font-size: 14px !important;
+    text-align: left;
+    outline: none;
+    width: 200px !important;
+  }
+
+  .form__add .form-input:focus,
+  .form__add .form-select:focus {
+    border-color: #007bff;
+  }
+
+  .form__add .btn {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .form__add .btn:hover {
+    background-color: #333;
+  }
+
+  .form__add {
+    margin-right: 5px !important;
+  }

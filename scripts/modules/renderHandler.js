@@ -11,7 +11,6 @@ const renderTodoApp = (app) => {
   const {p, h2} = markup.createSignature();
   const table = markup.createTable();
   const {overlay, form} = markup.createModal();
-  const formAdd = markup.createAddForm();
   const button =  markup.createButtons([
     {
       className: 'btn btn__add mr-3',
@@ -31,7 +30,6 @@ const renderTodoApp = (app) => {
     list: table.tbody,
     overlay,
     formAuth: form,
-    formAdd,
   };
 };
 
@@ -43,7 +41,7 @@ const renderTasks = (elem, data) => {
   return allRow;
 };
 
-const randomizeId = (min, max) =>
+export const randomizeId = (min, max) =>
   Math.floor(Math.random() * (max - min + 1) + min);
 
 const sortTasksInStorage = (login) => {
@@ -54,10 +52,8 @@ const sortTasksInStorage = (login) => {
 
 const updateTaskIndices = (list, login) => {
   const tasks = JSON.parse(localStorage.getItem(login)) || [];
-  console.log('tasks: ', tasks);
 
   const taskRows = list.querySelectorAll('.task');
-  console.log('taskRows: ', taskRows);
   taskRows.forEach((row, index) => {
     const taskIndexElement = row.querySelector('.task-index');
     if (taskIndexElement) {
@@ -75,8 +71,6 @@ const updateTaskIndices = (list, login) => {
 
   sortTasksInStorage(login);
 };
-
-
 
 export default {
   randomizeId,
