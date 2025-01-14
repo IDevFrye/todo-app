@@ -22,7 +22,7 @@ export const initTodoApp = (selectorApp, idBounds) => {
   control.deleteTaskControl(list);
   control.editTaskControl(list);
   control.addFormControl(main, list, idBounds);
-  
+
   const currentUser = localStorage.getItem('current-user');
   if (currentUser) {
     const userTasks = JSON.parse(localStorage.getItem(currentUser)) || [];
@@ -31,4 +31,4 @@ export const initTodoApp = (selectorApp, idBounds) => {
   } else {
     overlay.style.display = 'flex';
   }
-}; 
+};

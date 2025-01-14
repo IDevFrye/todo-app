@@ -1,4 +1,5 @@
-import {getStorageData, setStorageData, addTaskToStorage, removeTaskFromStorage} from './storageHandler.js';
+import {getStorageData, setStorageData,
+  addTaskToStorage, removeTaskFromStorage} from './storageHandler.js';
 import render from './renderHandler.js';
 import {createAddForm, createButtons, createRow} from './markupHandler.js';
 
@@ -30,7 +31,7 @@ export const modalControl = (overlay, formAuth, list) => {
     formAuth.reset();
     renderTasks(list, userTasks);
   };
-  
+
 
   formAuth.addEventListener('submit', handleAuth);
   document.addEventListener('keydown', e => {
@@ -42,24 +43,12 @@ export const modalControl = (overlay, formAuth, list) => {
 
   return {
     openModal,
-  }
-};
-
-export const addFormControl = (main, list, idBounds) => {
-  main.addEventListener('click', e => {
-    const target = e.target;
-    const btnAdd = target.closest('.btn__add');
-    if (btnAdd) {
-      const formAdd = createAddForm();
-      btnAdd.replaceWith(formAdd);
-      addTaskControl(formAdd, list, idBounds);
-    }
-  });
+  };
 };
 
 export const addTaskControl = (formAdd, list, idBounds) => {
   const saveButton = Array.from(formAdd.elements).find(
-    (el) => el.type === 'submit'
+    (el) => el.type === 'submit',
   );
   const taskNameInput = formAdd.elements['taskName'];
   const importanceSelect = formAdd.elements['taskImportance'];
@@ -80,7 +69,7 @@ export const addTaskControl = (formAdd, list, idBounds) => {
   const handleEvent = e => {
     if (isEventHandled) return;
     isEventHandled = true;
-    
+
     e.preventDefault();
     if (!saveButton.disabled) {
       const taskName = taskNameInput.value.trim();
@@ -97,7 +86,7 @@ export const addTaskControl = (formAdd, list, idBounds) => {
 
       list.append(createRow(newContact));
       const login = getStorageData('current-user');
-      addTaskToStorage(login, newContact)
+      addTaskToStorage(login, newContact);
       updateTaskIndices(list, login);
 
       const btnAdd = createButtons([
@@ -110,11 +99,23 @@ export const addTaskControl = (formAdd, list, idBounds) => {
       formAdd.replaceWith(btnAdd.btnWrapper);
     };
   };
-  
+
   formAdd.addEventListener('submit', (e) => handleEvent(e));
   document.addEventListener('keypress', (e) => {
     if (e.code === 'Enter' && !isEventHandled) {
       handleEvent(e);
+    }
+  });
+};
+
+export const addFormControl = (main, list, idBounds) => {
+  main.addEventListener('click', e => {
+    const target = e.target;
+    const btnAdd = target.closest('.btn__add');
+    if (btnAdd) {
+      const formAdd = createAddForm();
+      btnAdd.replaceWith(formAdd);
+      addTaskControl(formAdd, list, idBounds);
     }
   });
 };
@@ -124,10 +125,14 @@ export const deleteTaskControl = (list) => {
     const target = e.target;
     if (target.closest('.del-icon')) {
       const task = target.closest('.task');
-      task.remove();
-      const login = getStorageData('current-user');
-      removeTaskFromStorage(login, task.taskId.textContent);
-      updateTaskIndices(list, login);
+      const agree = confirm(`Вы точно хотите удалить задачу?
+№${task.taskId.textContent}: '${task.taskName.textContent}'`);
+      if (agree) {
+        task.remove();
+        const login = getStorageData('current-user');
+        removeTaskFromStorage(login, task.taskId.textContent);
+        updateTaskIndices(list, login);
+      }
     }
   });
 };
@@ -150,9 +155,12 @@ export const editTaskControl = (list) => {
         const importanceSelect = document.createElement('select');
         importanceSelect.classList.add('select-editable');
         importanceSelect.innerHTML = `
-          <option value="Обычная" ${currentImportance === 'Обычная' ? 'selected' : ''}>Обычная</option>
-          <option value="Важная" ${currentImportance === 'Важная' ? 'selected' : ''}>Важная</option>
-          <option value="Срочная" ${currentImportance === 'Срочная' ? 'selected' : ''}>Срочная</option>
+          <option value="Обычная" ${currentImportance === 'Обычная' ?
+          'selected' : ''}>Обычная</option>
+          <option value="Важная" ${currentImportance === 'Важная' ?
+          'selected' : ''}>Важная</option>
+          <option value="Срочная" ${currentImportance === 'Срочная' ?
+          'selected' : ''}>Срочная</option>
         `;
 
         taskImportanceElement.replaceWith(importanceSelect);
@@ -160,8 +168,28 @@ export const editTaskControl = (list) => {
         let isImportanceSelectFocused = false;
         let isSaving = false;
 
+        const handleBlurTaskName = () => {
+          isTaskNameFocused = false;
+          setTimeout(() => saveChanges(), 100);
+        };
+
+        const handleBlurImportance = () => {
+          isImportanceSelectFocused = false;
+          setTimeout(() => saveChanges(), 100);
+        };
+
+        const handleKeyPress = (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            isTaskNameFocused = false;
+            isImportanceSelectFocused = false;
+            saveChanges();
+          }
+        };
+
         const saveChanges = () => {
-          if (isTaskNameFocused || isImportanceSelectFocused || isSaving) return;
+          if (isTaskNameFocused ||
+            isImportanceSelectFocused || isSaving) return;
 
           isSaving = true;
 
@@ -190,7 +218,8 @@ export const editTaskControl = (list) => {
 
           if (importanceSelect.parentNode) {
             const newTaskImportanceElement = document.createElement('div');
-            newTaskImportanceElement.className = `${newImportanceClass} container`;
+            newTaskImportanceElement.className =
+            `${newImportanceClass} container`;
             newTaskImportanceElement.textContent = updatedTaskImportance;
             importanceSelect.replaceWith(newTaskImportanceElement);
             taskRow.taskImportance = newTaskImportanceElement;
@@ -198,7 +227,8 @@ export const editTaskControl = (list) => {
 
           const login = getStorageData('current-user');
           const tasks = JSON.parse(localStorage.getItem(login)) || [];
-          const taskIndex = tasks.findIndex((task) => task.taskId === Number(taskId));
+          const taskIndex = tasks.findIndex((task) =>
+            task.taskId === Number(taskId));
 
           if (taskIndex !== -1) {
             tasks[taskIndex].taskName = updatedTaskName;
@@ -206,7 +236,8 @@ export const editTaskControl = (list) => {
 
             const importanceClasses = ['common', 'important', 'urgent'];
             taskRow.querySelectorAll('td').forEach((td) => {
-              importanceClasses.forEach((cls) => td.classList.remove(cls + '-td'));
+              importanceClasses.forEach((cls) =>
+                td.classList.remove(cls + '-td'));
             });
 
             taskRow.querySelectorAll('td').forEach((td) => {
@@ -221,26 +252,6 @@ export const editTaskControl = (list) => {
           taskNameElement.removeEventListener('keypress', handleKeyPress);
           importanceSelect.removeEventListener('blur', handleBlurImportance);
           importanceSelect.removeEventListener('keypress', handleKeyPress);
-        };
-
-
-        const handleBlurTaskName = () => {
-          isTaskNameFocused = false;
-          setTimeout(() => saveChanges(), 100);
-        };
-
-        const handleBlurImportance = () => {
-          isImportanceSelectFocused = false;
-          setTimeout(() => saveChanges(), 100);
-        };
-
-        const handleKeyPress = (e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            isTaskNameFocused = false;
-            isImportanceSelectFocused = false;
-            saveChanges();
-          }
         };
 
         taskNameElement.addEventListener('focus', () => {
@@ -271,9 +282,11 @@ export const finishTaskControl = (list) => {
           importanceClasses.forEach((cls) => td.classList.remove(`${cls}-td`));
         });
 
-        const taskImportanceElement = taskRow.querySelector('.container .container');
+        const taskImportanceElement = taskRow.
+          querySelector('.container .container');
         if (taskImportanceElement) {
-          importanceClasses.forEach((cls) => taskImportanceElement.classList.remove(cls));
+          importanceClasses.forEach((cls) =>
+            taskImportanceElement.classList.remove(cls));
         };
 
         taskRow.querySelectorAll('td').forEach((td) => {

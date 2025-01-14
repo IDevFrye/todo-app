@@ -11,7 +11,7 @@ const renderTodoApp = (app) => {
   const {p, h2} = markup.createSignature();
   const table = markup.createTable();
   const {overlay, form} = markup.createModal();
-  const button =  markup.createButtons([
+  const button = markup.createButtons([
     {
       className: 'btn btn__add mr-3',
       type: 'button',
@@ -59,7 +59,7 @@ const updateTaskIndices = (list, login) => {
     if (taskIndexElement) {
       taskIndexElement.textContent = index + 1;
     }
-    
+
     const taskId = row.querySelector('.task__idn')?.textContent;
     const taskData = tasks.find((t) => t.taskId === Number(taskId));
     if (taskData) {

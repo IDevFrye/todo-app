@@ -6,7 +6,8 @@ const createContainer = () => {
 
 export const createButtons = (params) => {
   const btnWrapper = document.createElement('div');
-  btnWrapper.classList.add('btn-wrapper', 'd-flex', 'justify-content-center', 'gap-2');
+  btnWrapper.classList.add(
+    'btn-wrapper', 'd-flex', 'justify-content-center', 'gap-2');
 
   const btns = params.map(({className, type, text}) => {
     const button = document.createElement('button');
@@ -26,10 +27,12 @@ export const createButtons = (params) => {
 
 export const createHeader = () => {
   const header = document.createElement('header');
-  header.classList.add('bg-light', 'py-3', 'mb-4', 'border-bottom');
+  header.classList.add(
+    'bg-light', 'py-3', 'mb-4', 'border-bottom');
 
   const headerContainer = createContainer();
-  headerContainer.classList.add('d-flex', 'align-items-center', 'justify-content-between');
+  headerContainer.classList.add(
+    'd-flex', 'align-items-center', 'justify-content-between');
   header.append(headerContainer);
 
   header.headerContainer = headerContainer;
@@ -70,7 +73,6 @@ export const createLogo = () => {
   };
 };
 
-
 export const createMain = () => {
   const main = document.createElement('main');
   const mainContainer = createContainer();
@@ -86,7 +88,8 @@ export const createFooter = () => {
   footer.classList.add('footer', 'mt-4');
 
   const footerContainer = createContainer();
-  footerContainer.classList.add('d-flex', 'align-items-center', 'justify-content-between');
+  footerContainer.classList.add(
+    'd-flex', 'align-items-center', 'justify-content-between');
 
   footer.append(footerContainer);
   footer.footerContainer = footerContainer;
@@ -106,7 +109,7 @@ export const createSignature = () => {
   return {
     p,
     h2,
-  }
+  };
 };
 
 export const createModal = () => {
@@ -126,7 +129,7 @@ export const createModal = () => {
 
   const form = document.createElement('form');
   form.classList.add('form', 'form__auth', 'mt-3');
-  
+
   form.insertAdjacentHTML(
     'beforeend',
     `
@@ -141,7 +144,7 @@ export const createModal = () => {
       />
     </div>
     <button class="btn w-50 btn-modal btn__auth" type="submit">Войти</button>
-    `
+    `,
   );
 
   modal.append(logo, h1, form);
@@ -170,7 +173,7 @@ export const createAddForm = () => {
       </select>
     </div>
     `);
-  
+
   const buttonGroup = createButtons([
     {
       className: 'btn btn-primary mr-3',
@@ -215,7 +218,8 @@ export const createTable = () => {
   return table;
 };
 
-export const createRow = ({index, taskId, taskName, taskStatus, taskImportance}) => {
+export const createRow = (
+    {index, taskId, taskName, taskStatus, taskImportance}) => {
   const tr = document.createElement('tr');
   tr.classList.add('task');
 
@@ -254,7 +258,8 @@ export const createRow = ({index, taskId, taskName, taskStatus, taskImportance})
   };
 
   const tdIndex = document.createElement('td');
-  tdIndex.classList.add(importanceClass + '-td', statusClass + '-td', 'task-index');
+  tdIndex.classList.add(
+    importanceClass + '-td', statusClass + '-td', 'task-index');
   tdIndex.textContent = index + 1;
 
   const tdTask = document.createElement('td');
@@ -268,7 +273,7 @@ export const createRow = ({index, taskId, taskName, taskStatus, taskImportance})
   const taskIdTd = createContainer();
   taskIdTd.append(`ID: `);
   const taskIdTdNumber = document.createElement('span');
-  taskIdTdNumber.classList.add('task__idn')
+  taskIdTdNumber.classList.add('task__idn');
   taskIdTdNumber.append(taskId);
   taskIdTd.append(taskIdTdNumber);
   taskIdTd.classList.add('task__id', 'p-0');
@@ -283,7 +288,8 @@ export const createRow = ({index, taskId, taskName, taskStatus, taskImportance})
   const taskImportanceTd = createContainer();
   taskImportanceTd.classList.add('right-container');
   const taskImportanceSpan = document.createElement('div');
-  taskImportanceSpan.classList.add('container', importanceClass, `${statusClass}-span`);
+  taskImportanceSpan.classList.add(
+    'container', importanceClass, `${statusClass}-span`);
   taskImportanceSpan.textContent = taskImportance;
   taskImportanceTd.append(taskImportanceSpan);
   tr.taskImportance = taskImportanceSpan;
@@ -299,7 +305,9 @@ export const createRow = ({index, taskId, taskName, taskStatus, taskImportance})
   tdStatus.append(tdStatusContainer);
 
   const tdActions = document.createElement('td');
-  tdActions.classList.add('d-flex', 'justify-content-start', statusClass + '-actions', importanceClass + '-td', statusClass + '-td');
+  tdActions.classList.add(
+    'd-flex', 'justify-content-start', statusClass + '-actions',
+    importanceClass + '-td', statusClass + '-td');
 
   const tdEdit = createButtons([
     {
@@ -334,18 +342,10 @@ export const createRow = ({index, taskId, taskName, taskStatus, taskImportance})
   `<i class="fa-solid fa-trash-can"></i>`;
   tdDelete.btnWrapper.style.marginBottom = 0;
 
-  tdActions.append(tdEdit.btnWrapper, tdComplete.btnWrapper, tdDelete.btnWrapper);
-  
+  tdActions.append(
+    tdEdit.btnWrapper, tdComplete.btnWrapper, tdDelete.btnWrapper);
+
   tr.append(tdIndex, tdTask, tdStatus, tdActions);
 
   return tr;
-};
-
-export const addTaskToList = (task, list) => {
-  list.append(createRow(task));
-};
-
-export const removeTaskFromList = (index, list) => {
-  const rows = list.querySelectorAll('tr');
-  rows[index].remove();
 };
