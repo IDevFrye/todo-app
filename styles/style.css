@@ -151,6 +151,19 @@ body {
   }
 }
 
+.return-icon {
+  background-color: #000000 !important;
+  color:#ffffff !important;
+  border: 3px solid rgb(233, 205, 143) !important;
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  margin-right: 8px;
+  margin-left: 52px;
+  &:hover {
+    background-color: rgb(233, 205, 143) !important;
+  }
+}
+
 .task__id {
   color:#6c757d;
   font-size: 12px;
@@ -173,7 +186,7 @@ body {
   position: relative;
 }
 
-.completed-actions button {
+/* .completed-actions button {
   pointer-events: none;
   background-color: #d6d6d6 !important;
   color: #a1a1a1 !important;
@@ -182,7 +195,7 @@ body {
 
 .completed-actions i {
   color: #a1a1a1;
-}
+} */
 
 .completed::after {
   content: '✅';

@@ -309,41 +309,67 @@ export const createRow = (
     'd-flex', 'justify-content-start', statusClass + '-actions',
     importanceClass + '-td', statusClass + '-td');
 
-  const tdEdit = createButtons([
-    {
-      className: 'btn mr-3 edit-icon',
-      type: 'button',
-      text: '',
-    },
-  ]);
-  tdEdit.btns[0].innerHTML =
-  `<i class="fa-solid fa-pen"></i>`;
-  tdEdit.btnWrapper.style.marginBottom = 0;
+  if (statusClass === 'completed') {
+    const tdReturnState = createButtons([
+      {
+        className: 'btn mr-3 return-icon',
+        type: 'button',
+        text: '',
+      },
+    ]);
+    tdReturnState.btns[0].innerHTML =
+    `<i class="fa-solid fa-arrow-rotate-right"></i>`;
+    tdReturnState.btnWrapper.style.marginBottom = 0;
 
-  const tdComplete = createButtons([
-    {
-      className: 'btn mr-3 complete-icon',
-      type: 'button',
-      text: '',
-    },
-  ]);
-  tdComplete.btns[0].innerHTML =
-  `<i class="fa-solid fa-check"></i>`;
-  tdComplete.btnWrapper.style.marginBottom = 0;
+    const tdDelete = createButtons([
+      {
+        className: 'btn mr-3 del-icon',
+        type: 'button',
+        text: '',
+      },
+    ]);
+    tdDelete.btns[0].innerHTML =
+    `<i class="fa-solid fa-trash-can"></i>`;
+    tdDelete.btnWrapper.style.marginBottom = 0;
+    tdActions.append(
+      tdReturnState.btnWrapper, tdDelete.btnWrapper);
+  } else {
+    const tdEdit = createButtons([
+      {
+        className: 'btn mr-3 edit-icon',
+        type: 'button',
+        text: '',
+      },
+    ]);
+    tdEdit.btns[0].innerHTML =
+    `<i class="fa-solid fa-pen"></i>`;
+    tdEdit.btnWrapper.style.marginBottom = 0;
 
-  const tdDelete = createButtons([
-    {
-      className: 'btn mr-3 del-icon',
-      type: 'button',
-      text: '',
-    },
-  ]);
-  tdDelete.btns[0].innerHTML =
-  `<i class="fa-solid fa-trash-can"></i>`;
-  tdDelete.btnWrapper.style.marginBottom = 0;
+    const tdComplete = createButtons([
+      {
+        className: 'btn mr-3 complete-icon',
+        type: 'button',
+        text: '',
+      },
+    ]);
+    tdComplete.btns[0].innerHTML =
+    `<i class="fa-solid fa-check"></i>`;
+    tdComplete.btnWrapper.style.marginBottom = 0;
 
-  tdActions.append(
-    tdEdit.btnWrapper, tdComplete.btnWrapper, tdDelete.btnWrapper);
+    const tdDelete = createButtons([
+      {
+        className: 'btn mr-3 del-icon',
+        type: 'button',
+        text: '',
+      },
+    ]);
+    tdDelete.btns[0].innerHTML =
+    `<i class="fa-solid fa-trash-can"></i>`;
+    tdDelete.btnWrapper.style.marginBottom = 0;
+
+    tdActions.append(
+      tdEdit.btnWrapper, tdComplete.btnWrapper, tdDelete.btnWrapper);
+  }
 
   tr.append(tdIndex, tdTask, tdStatus, tdActions);
 

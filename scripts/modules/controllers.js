@@ -271,6 +271,90 @@ export const editTaskControl = (list) => {
   });
 };
 
+export const returnStateControl = (list) => {
+  list.addEventListener('click', e => {
+    const target = e.target;
+    if (target.closest('.return-icon')) {
+      const task = target.closest('.task');
+      if (task) {
+        const importanceClasses = ['completed', 'processing'];
+        task.querySelectorAll('td').forEach((td) => {
+          importanceClasses.forEach((cls) => td.classList.remove(`${cls}-td`));
+        });
+
+        task.querySelectorAll('td').forEach((td) => {
+          td.classList.add('processing-td');
+        });
+
+        const tdEdit = createButtons([
+          {
+            className: 'btn mr-3 edit-icon',
+            type: 'button',
+            text: '',
+          },
+        ]);
+        tdEdit.btns[0].innerHTML =
+        `<i class="fa-solid fa-pen"></i>`;
+        tdEdit.btnWrapper.style.marginBottom = 0;
+
+        const tdComplete = createButtons([
+          {
+            className: 'btn mr-3 complete-icon',
+            type: 'button',
+            text: '',
+          },
+        ]);
+        tdComplete.btns[0].innerHTML =
+        `<i class="fa-solid fa-check"></i>`;
+        tdComplete.btnWrapper.style.marginBottom = 0;
+
+        const tdDelete = createButtons([
+          {
+            className: 'btn mr-3 del-icon',
+            type: 'button',
+            text: '',
+          },
+        ]);
+        tdDelete.btns[0].innerHTML =
+        `<i class="fa-solid fa-trash-can"></i>`;
+        tdDelete.btnWrapper.style.marginBottom = 0;
+
+        const actions = task.querySelector('.completed-actions');
+        actions.innerHTML = '';
+        actions.append(tdEdit.btnWrapper, tdComplete.btnWrapper,
+          tdDelete.btnWrapper);
+        actions.classList.add('processing-actions');
+        actions.classList.remove('completed-actions');
+
+        const span = task.querySelector('.completed-span');
+        span.classList.add('processing-span');
+        span.classList.remove('completed-span');
+
+        const taskName = task.querySelector('.completed-taskName');
+        taskName.classList.add('processing-taskName');
+        taskName.classList.remove('completed-taskName');
+
+        const status = task.querySelector('.completed');
+        status.textContent = 'Ожидает выполнения';
+        status.classList.add('processing');
+        status.classList.remove('completed');
+
+        list.append(task);
+
+        const login = getStorageData('current-user');
+        const tasks = JSON.parse(localStorage.getItem(login)) || [];
+        const taskId = Number(task.taskId.textContent);
+
+        const taskIndex = tasks.findIndex((task) => task.taskId === taskId);
+        if (taskIndex !== -1) {
+          tasks[taskIndex].taskStatus = 'Ожидает выполнения';
+          localStorage.setItem(login, JSON.stringify(tasks));
+        };
+      };
+    }
+  });
+};
+
 export const finishTaskControl = (list) => {
   list.addEventListener('click', (e) => {
     const target = e.target;
@@ -293,7 +377,31 @@ export const finishTaskControl = (list) => {
           td.classList.add('completed-td');
         });
 
+        const tdReturnState = createButtons([
+          {
+            className: 'btn mr-3 return-icon',
+            type: 'button',
+            text: '',
+          },
+        ]);
+        tdReturnState.btns[0].innerHTML =
+        `<i class="fa-solid fa-arrow-rotate-right"></i>`;
+        tdReturnState.btnWrapper.style.marginBottom = 0;
+
+        const tdDelete = createButtons([
+          {
+            className: 'btn mr-3 del-icon',
+            type: 'button',
+            text: '',
+          },
+        ]);
+        tdDelete.btns[0].innerHTML =
+        `<i class="fa-solid fa-trash-can"></i>`;
+        tdDelete.btnWrapper.style.marginBottom = 0;
+
         const actions = taskRow.querySelector('.processing-actions');
+        actions.innerHTML = '';
+        actions.append(tdReturnState.btnWrapper, tdDelete.btnWrapper);
         actions.classList.add('completed-actions');
         actions.classList.remove('processing-actions');
 

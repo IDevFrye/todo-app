@@ -22,6 +22,7 @@ export const initTodoApp = (selectorApp, idBounds) => {
   control.deleteTaskControl(list);
   control.editTaskControl(list);
   control.addFormControl(main, list, idBounds);
+  control.returnStateControl(list);
 
   const currentUser = localStorage.getItem('current-user');
   if (currentUser) {
