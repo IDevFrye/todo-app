@@ -1,3 +1,6 @@
+import imageHeader from '../img/header_icon.png';
+import icon from '../img/icon.png';
+
 const createContainer = () => {
   const container = document.createElement('div');
   container.classList.add('container');
@@ -46,7 +49,7 @@ export const createLogo = () => {
 
   const logo = document.createElement('img');
   logo.classList.add('header__logo', 'me-2');
-  logo.src = '../../img/header_icon.png';
+  logo.src = imageHeader;
   logo.alt = 'Logo';
   logo.style.width = '70px';
 
@@ -125,7 +128,7 @@ export const createModal = () => {
 
   const logo = document.createElement('img');
   logo.classList.add('modal__img', 'mb-3');
-  logo.src = '../../img/icon.png';
+  logo.src = icon;
 
   const form = document.createElement('form');
   form.classList.add('form', 'form__auth', 'mt-3');

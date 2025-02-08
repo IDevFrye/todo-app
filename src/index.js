@@ -1,5 +1,9 @@
-import render from './modules/renderHandler.js';
-import * as control from './modules/controllers.js';
+import render from './script/renderHandler.js';
+import * as control from './script/controllers.js';
+
+import './index.html';
+import './css/style.css';
+import './scss/index.scss';
 
 const {renderTodoApp, renderTasks} = render;
 
@@ -33,3 +37,11 @@ export const initTodoApp = (selectorApp, idBounds) => {
     overlay.style.display = 'flex';
   }
 };
+
+const idBounds = {
+  min: 100000000,
+  max: 3000000000,
+};
+document.addEventListener('DOMContentLoaded', () => {
+  initTodoApp('.app-container', idBounds);
+});
